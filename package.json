@@ -8,6 +8,7 @@
     "measure": "node src/runner/benchmark.js --mode=replay",
     "measure:live": "node src/runner/benchmark.js --mode=live",
     "measure:replay": "node src/runner/benchmark.js --mode=replay",
+    "measure:task": "node src/runner/live-single-task.js",
     "test": "node src/runner/benchmark.js --mode=replay"
   },
   "keywords": [

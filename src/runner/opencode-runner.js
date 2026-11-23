@@ -29,7 +29,7 @@ export function runOpencodeHeadless(prompt, options = {}) {
     }
 
     const startTime = performance.now();
-    const args = ['run', '--format', 'json', '--auto'];
+    const args = ['run', '--pure', '--format', 'json', '--auto'];
     if (options.model) {
       args.push('-m', options.model);
     }
