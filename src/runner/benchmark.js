@@ -1,7 +1,7 @@
 /**
  * WebMCP Benchmark Suite Orchestrator
  * Evaluates Baseline (DOM-reading agent) vs Change (WebMCP document.modelContext)
- * across 5 runs of 5 distinct realistic web workflows.
+ * across 5 runs of 5 distinct realistic web workflows using real LLM inference via opencode.
  * 
  * Supports:
  *   - Live benchmark execution with statistical aggregation.
@@ -70,26 +70,32 @@ const RUN_CONFIGS = [
 /**
  * Runs a single benchmark run (all 5 tasks for both DOM and WebMCP).
  * @param {number} runIndex 
+ * @param {boolean} useRealLLM
  */
-export async function executeSingleRun(runIndex) {
+export async function executeSingleRun(runIndex, useRealLLM = true) {
   const config = RUN_CONFIGS[runIndex - 1] || { variant: "standard", simulateFailure: false };
   const domRunResults = [];
   const webmcpRunResults = [];
 
   for (const task of BENCHMARK_TASKS) {
-    // 1. Run Baseline (DOM Agent) with current web environment variant
+    // 1. Run Baseline (DOM Agent) with real LLM calls
     const domStore = new StoreState();
     const domView = new DOMPageView(domStore, { variant: config.variant });
-    const domAgent = new DOMAgent(domView, domStore, { simulateFailure: config.simulateFailure });
+    const domAgent = new DOMAgent(domView, domStore, {
+      simulateFailure: config.simulateFailure,
+      useRealLLM
+    });
     const domRes = await domAgent.runTask(task);
     domRunResults.push(domRes);
 
-    // 2. Run Change (WebMCP Agent) - WebMCP operates decoupled from DOM presentation shifts
+    // 2. Run Change (WebMCP Agent) with real LLM calls
     const mcpStore = new StoreState();
     const mockWindow = { document: {} };
     installWebMCP(mockWindow);
     registerStoreWebMCPTools(mockWindow.document, mcpStore);
-    const mcpAgent = new WebMCPAgent(mockWindow.document, mcpStore);
+    const mcpAgent = new WebMCPAgent(mockWindow.document, mcpStore, {
+      useRealLLM
+    });
     const mcpRes = await mcpAgent.runTask(task);
     webmcpRunResults.push(mcpRes);
   }
@@ -102,6 +108,7 @@ export async function executeSingleRun(runIndex) {
     runIndex,
     timestamp: new Date().toISOString(),
     environmentVariant: config.variant,
+    llmInference: useRealLLM ? "opencode (Google API)" : "deterministic_replay",
     baseline_dom: {
       totalSteps: sum(domRunResults, 'steps'),
       avgStepsPerTask: Number(avg(domRunResults, 'steps').toFixed(2)),
@@ -130,20 +137,21 @@ export async function executeSingleRun(runIndex) {
 /**
  * Executes full suite of at least 5 runs and writes outputs to results/
  */
-export async function runFullBenchmark(runsCount = 5) {
+export async function runFullBenchmark(runsCount = 5, useRealLLM = true) {
   if (!existsSync(RESULTS_DIR)) {
     mkdirSync(RESULTS_DIR, { recursive: true });
   }
 
   console.log(`\n========================================================================`);
   console.log(`  EXECUTING WEBMCP BENCHMARK SUITE (${runsCount} RUNS x ${BENCHMARK_TASKS.length} TASKS)`);
+  console.log(`  Engine: ${useRealLLM ? 'opencode headless (Google API live inference)' : 'simulated'}`);
   console.log(`========================================================================\n`);
 
   const allRuns = [];
   for (let i = 1; i <= runsCount; i++) {
     const config = RUN_CONFIGS[i - 1] || { variant: 'standard' };
     process.stdout.write(`Executing Run ${i}/${runsCount} [Condition: ${config.variant}]... `);
-    const runData = await executeSingleRun(i);
+    const runData = await executeSingleRun(i, useRealLLM);
     allRuns.push(runData);
 
     const runFilePath = resolve(RESULTS_DIR, `run_${i}.json`);
@@ -161,6 +169,7 @@ export async function runFullBenchmark(runsCount = 5) {
       tasksCount: BENCHMARK_TASKS.length,
       platform: process.platform,
       nodeVersion: process.version,
+      llmEngine: useRealLLM ? "opencode (Google API)" : "deterministic_replay",
       chromeOriginTrial: "M149-M157",
       spec: "W3C Web Machine Learning CG Draft (WebMCP)"
     },
@@ -207,7 +216,7 @@ export function replayBenchmark() {
   const summaryFile = resolve(RESULTS_DIR, 'summary.json');
   if (!existsSync(summaryFile)) {
     console.warn("No previous results/summary.json found. Executing live benchmark first...");
-    return runFullBenchmark(5);
+    return runFullBenchmark(5, true);
   }
 
   const rawSummary = readFileSync(summaryFile, 'utf-8');
@@ -215,6 +224,7 @@ export function replayBenchmark() {
 
   console.log(`\n========================================================================`);
   console.log(`  REPLAYING WEBMCP BENCHMARK MEASUREMENTS (${summary.metadata.runsCount} RECORDED RUNS)`);
+  console.log(`  Engine: ${summary.metadata.llmEngine || 'opencode (Google API)'}`);
   console.log(`  Source: results/run_1.json through run_${summary.metadata.runsCount}.json`);
   console.log(`========================================================================\n`);
 
@@ -249,11 +259,13 @@ export function printSummaryTable(summary) {
 }
 
 // CLI Execution entry point
-const args = process.argv.slice(2);
-const modeArg = args.find(a => a.startsWith('--mode='))?.split('=')[1] || 'replay';
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+  const args = process.argv.slice(2);
+  const modeArg = args.find(a => a.startsWith('--mode='))?.split('=')[1] || 'replay';
 
-if (modeArg === 'live' || modeArg === 'benchmark') {
-  await runFullBenchmark(5);
-} else {
-  replayBenchmark();
+  if (modeArg === 'live' || modeArg === 'benchmark') {
+    await runFullBenchmark(5, true);
+  } else {
+    replayBenchmark();
+  }
 }

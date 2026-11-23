@@ -29,14 +29,16 @@ export function runOpencodeHeadless(prompt, options = {}) {
     }
 
     const startTime = performance.now();
-    const args = ['run', prompt, '--format', 'json', '--auto'];
+    const args = ['run', '--format', 'json', '--auto'];
     if (options.model) {
       args.push('-m', options.model);
     }
+    args.push(prompt);
 
     const proc = spawn(OPENCODE_PATH, args, {
       cwd: options.cwd || process.cwd(),
-      env: process.env
+      env: process.env,
+      stdio: ['ignore', 'pipe', 'pipe']
     });
 
     let fullText = '';
