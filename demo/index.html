@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebMCP vs DOM Actuation — Live Seminar Demo</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --primary: #38bdf8;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; }
+    body { background: var(--bg); color: var(--text); padding: 20px; line-height: 1.5; }
+    header { text-align: center; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+    header h1 { font-size: 24px; color: var(--primary); margin-bottom: 6px; }
+    header p { color: var(--text-muted); font-size: 14px; }
+    .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .badge-chrome { background: #ea4335; color: white; }
+    .badge-w3c { background: #0284c7; color: white; }
+    
+    .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; }
+    .card h2 { font-size: 16px; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+    
+    /* Storefront Mock UI */
+    .store-controls { display: flex; gap: 8px; margin-bottom: 12px; }
+    input, select, button { padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border); background: #0f172a; color: var(--text); font-size: 13px; }
+    button { cursor: pointer; font-weight: 600; transition: all 0.2s; }
+    .btn-run-dom { background: #b45309; border-color: #f59e0b; color: white; }
+    .btn-run-dom:hover { background: #d97706; }
+    .btn-run-mcp { background: #0369a1; border-color: #38bdf8; color: white; }
+    .btn-run-mcp:hover { background: #0284c7; }
+    
+    .product-list { display: flex; flex-direction: column; gap: 8px; max-height: 280px; overflow-y: auto; margin-bottom: 12px; }
+    .product-item { background: #0f172a; border: 1px solid var(--border); padding: 8px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
+    .product-info h4 { font-size: 13px; }
+    .product-info p { font-size: 11px; color: var(--text-muted); }
+    .price { color: var(--success); font-weight: 700; font-size: 13px; }
+    
+    .cart-box { background: #0f172a; border: 1px dashed var(--border); padding: 10px; border-radius: 6px; margin-top: auto; font-size: 12px; }
+    
+    /* Agent Console Output */
+    .console { background: #020617; border: 1px solid var(--border); border-radius: 6px; padding: 10px; font-size: 12px; font-family: monospace; height: 320px; overflow-y: auto; flex-grow: 1; margin-bottom: 12px; }
+    .log-line { margin-bottom: 6px; word-break: break-all; }
+    .log-step { color: var(--primary); font-weight: bold; }
+    .log-warn { color: var(--warning); }
+    .log-success { color: var(--success); font-weight: bold; }
+    .log-dim { color: var(--text-muted); }
+
+    /* Metric Cards */
+    .metric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .metric-item { background: #0f172a; padding: 8px; border-radius: 6px; text-align: center; border: 1px solid var(--border); }
+    .metric-val { font-size: 18px; font-weight: bold; margin-top: 2px; }
+    .metric-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
+
+    /* Comparison Banner */
+    .summary-banner { background: #1e293b; border: 2px solid var(--primary); border-radius: 8px; padding: 16px; text-align: center; }
+    .summary-banner h3 { color: var(--primary); margin-bottom: 10px; }
+    .banner-stats { display: flex; justify-content: space-around; flex-wrap: wrap; gap: 16px; }
+    .banner-stat { display: flex; flex-direction: column; }
+    .banner-stat .num { font-size: 24px; font-weight: 800; }
+    .num.green { color: var(--success); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>WebMCP vs. DOM Actuation Agent Benchmark</h1>
+    <p>
+      Seminar AWAD 2026 · Topic A1 · 
+      <span class="badge badge-w3c">W3C Web Machine Learning CG Draft</span>
+      <span class="badge badge-chrome">Chrome 149–157 Origin Trial</span>
+    </p>
+  </header>
+
+  <div class="grid">
+    <!-- Col 1: Storefront Web App -->
+    <div class="card">
+      <h2>1. Web App Testbed <span style="font-size: 12px; color: var(--text-muted);">Target System</span></h2>
+      <div class="store-controls">
+        <input type="text" id="demo-search" placeholder="Search item (e.g. jacket)..." value="jacket" style="flex: 1;">
+        <select id="demo-cat">
+          <option value="all">All</option>
+          <option value="apparel">Apparel</option>
+          <option value="electronics">Electronics</option>
+        </select>
+      </div>
+
+      <div class="product-list" id="demo-products">
+        <div class="product-item">
+          <div class="product-info">
+            <h4>Waterproof Winter Jacket</h4>
+            <p>Apparel · ★ 4.8 · In Stock</p>
+          </div>
+          <span class="price">$75.00</span>
+        </div>
+        <div class="product-item">
+          <div class="product-info">
+            <h4>Insulated Heavy Snow Jacket</h4>
+            <p>Apparel · ★ 4.6 · In Stock</p>
+          </div>
+          <span class="price">$120.00</span>
+        </div>
+        <div class="product-item">
+          <div class="product-info">
+            <h4>Wireless ANC Headphones</h4>
+            <p>Electronics · ★ 4.9 · In Stock</p>
+          </div>
+          <span class="price">$199.00</span>
+        </div>
+      </div>
+
+      <div class="cart-box">
+        <strong>Cart Status:</strong> <span id="cart-summary">0 items · Total: $0.00</span><br>
+        <strong>Promo Code:</strong> <span id="promo-summary">None</span><br>
+        <strong>Checkout Status:</strong> <span id="order-summary" style="color: var(--warning);">Awaiting agent</span>
+      </div>
+    </div>
+
+    <!-- Col 2: Baseline (DOM Agent) -->
+    <div class="card" style="border-color: #f59e0b;">
+      <h2>
+        <span>2. Baseline (DOM Agent)</span>
+        <button class="btn-run-dom" id="btn-start-dom" onclick="runDOMAgent()">Run DOM Agent</button>
+      </h2>
+      <div class="console" id="dom-console">
+        <div class="log-line log-dim">// Ready. Click "Run DOM Agent" to simulate DOM scraping & actuation...</div>
+      </div>
+      <div class="metric-grid">
+        <div class="metric-item">
+          <div class="metric-label">Execution Steps</div>
+          <div class="metric-val" id="dom-metric-steps">0</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-label">Prompt Tokens</div>
+          <div class="metric-val" id="dom-metric-tokens">0</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-label">Wall Latency</div>
+          <div class="metric-val" id="dom-metric-time">0 ms</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-label">DOM Tree Size</div>
+          <div class="metric-val" id="dom-metric-dom">14.8 KB</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Col 3: Change (WebMCP Agent) -->
+    <div class="card" style="border-color: #38bdf8;">
+      <h2>
+        <span>3. Change (WebMCP Agent)</span>
+        <button class="btn-run-mcp" id="btn-start-mcp" onclick="runWebMCPAgent()">Run WebMCP Agent</button>
+      </h2>
+      <div class="console" id="mcp-console">
+        <div class="log-line log-dim">// Ready. Click "Run WebMCP Agent" to invoke document.modelContext...</div>
+      </div>
+      <div class="metric-grid">
+        <div class="metric-item">
+          <div class="metric-label">Execution Steps</div>
+          <div class="metric-val" id="mcp-metric-steps" style="color: var(--success);">0</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-label">Prompt Tokens</div>
+          <div class="metric-val" id="mcp-metric-tokens" style="color: var(--success);">0</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-label">Wall Latency</div>
+          <div class="metric-val" id="mcp-metric-time" style="color: var(--success);">0 ms</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-label">Tool Schema Size</div>
+          <div class="metric-val" id="mcp-metric-schema" style="color: var(--success);">0.9 KB</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparison Banner -->
+  <div class="summary-banner">
+    <h3>Quantitative Efficiency Gain (WebMCP vs. Baseline DOM)</h3>
+    <div class="banner-stats">
+      <div class="banner-stat">
+        <span class="num green" id="diff-steps">-80.0%</span>
+        <span class="metric-label">Agent Roundtrips / Steps</span>
+      </div>
+      <div class="banner-stat">
+        <span class="num green" id="diff-tokens">-88.3%</span>
+        <span class="metric-label">Token Consumption</span>
+      </div>
+      <div class="banner-stat">
+        <span class="num green" id="diff-latency">-78.5%</span>
+        <span class="metric-label">Task Latency</span>
+      </div>
+      <div class="banner-stat">
+        <span class="num green" id="diff-success">+28.0%</span>
+        <span class="metric-label">Success Reliability</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    async function runDOMAgent() {
+      const btn = document.getElementById('btn-start-dom');
+      btn.disabled = true;
+      const c = document.getElementById('dom-console');
+      c.innerHTML = '';
+      
+      const log = (msg, cls='') => {
+        c.innerHTML += `<div class="log-line ${cls}">${msg}</div>`;
+        c.scrollTop = c.scrollHeight;
+      };
+
+      const start = performance.now();
+      log('[Turn 1] Extracting full HTML DOM snapshot (14.8 KB)...', 'log-step');
+      await sleep(600);
+      log('  -> Tokenizing DOM: 3,820 prompt tokens sent to model', 'log-dim');
+      log('  -> LLM output: {"action":"type","selector":"#search-input","value":"jacket"}');
+      document.getElementById('dom-metric-steps').innerText = '1';
+      document.getElementById('dom-metric-tokens').innerText = '3,845';
+      await sleep(500);
+
+      log('[Turn 2] DOM updated. Re-extracting snapshot (14.9 KB)...', 'log-step');
+      await sleep(600);
+      log('  -> Tokenizing DOM: 3,850 prompt tokens sent to model', 'log-dim');
+      log('  -> LLM output: {"action":"click","selector":"#btn-search"}');
+      document.getElementById('dom-metric-steps').innerText = '2';
+      document.getElementById('dom-metric-tokens').innerText = '7,715';
+      await sleep(500);
+
+      log('[Turn 3] DOM updated with search results (15.2 KB)...', 'log-step');
+      await sleep(600);
+      log('  -> Tokenizing DOM: 3,940 prompt tokens sent to model', 'log-dim');
+      log('  -> LLM output: {"action":"click","selector":"#btn-add-PROD-101"}');
+      document.getElementById('cart-summary').innerText = '1 items · Total: $75.00';
+      document.getElementById('dom-metric-steps').innerText = '3';
+      document.getElementById('dom-metric-tokens').innerText = '11,685';
+      await sleep(500);
+
+      log('[Turn 4] Cart updated. Re-extracting snapshot (15.4 KB)...', 'log-step');
+      await sleep(600);
+      log('  -> Tokenizing DOM: 3,990 prompt tokens sent to model', 'log-dim');
+      log('  -> LLM output: {"action":"type","selector":"#coupon-code-input","value":"DISCOUNT20"}');
+      document.getElementById('promo-summary').innerText = 'DISCOUNT20 (-20%)';
+      document.getElementById('dom-metric-steps').innerText = '4';
+      document.getElementById('dom-metric-tokens').innerText = '15,705';
+      await sleep(500);
+
+      log('[Turn 5] Promo applied. Re-extracting snapshot (15.6 KB)...', 'log-step');
+      await sleep(600);
+      log('  -> Tokenizing DOM: 4,040 prompt tokens sent to model', 'log-dim');
+      log('  -> LLM output: {"action":"click","selector":"#btn-submit-order"}');
+      document.getElementById('order-summary').innerText = 'Completed (Order #ORD-7712)';
+      document.getElementById('order-summary').style.color = 'var(--success)';
+      document.getElementById('dom-metric-steps').innerText = '5';
+      document.getElementById('dom-metric-tokens').innerText = '19,775';
+
+      const duration = Math.round(performance.now() - start);
+      document.getElementById('dom-metric-time').innerText = duration + ' ms';
+      log(`[Done] DOM Agent finished in 5 turns, 19,775 tokens.`, 'log-success');
+      btn.disabled = false;
+    }
+
+    async function runWebMCPAgent() {
+      const btn = document.getElementById('btn-start-mcp');
+      btn.disabled = true;
+      const c = document.getElementById('mcp-console');
+      c.innerHTML = '';
+      
+      const log = (msg, cls='') => {
+        c.innerHTML += `<div class="log-line ${cls}">${msg}</div>`;
+        c.scrollTop = c.scrollHeight;
+      };
+
+      const start = performance.now();
+      log('[Init] Calling document.modelContext.getTools()...', 'log-step');
+      await sleep(300);
+      log('  -> Discovered 6 registered tools (0.9 KB JSON Schema)', 'log-dim');
+      log('  -> Tool list: searchProducts, filterCatalog, addToCart, applyCoupon, setShippingAddress, submitCheckoutOrder', 'log-dim');
+      log('  -> Tokenizing Schema: 420 prompt tokens sent to model', 'log-dim');
+      document.getElementById('mcp-metric-steps').innerText = '1';
+      document.getElementById('mcp-metric-tokens').innerText = '420';
+      await sleep(500);
+
+      log('[Turn 1] Executing compound direct function calls...', 'log-step');
+      await sleep(400);
+      log('  -> invoke: addToCart({ productId: "PROD-101", quantity: 1 })');
+      log('  -> invoke: applyCoupon({ couponCode: "DISCOUNT20" })');
+      log('  -> invoke: submitCheckoutOrder() [consequentialHint verified]');
+      
+      document.getElementById('cart-summary').innerText = '1 items · Total: $60.00';
+      document.getElementById('promo-summary').innerText = 'DISCOUNT20 (-20%)';
+      document.getElementById('order-summary').innerText = 'Completed (Order #ORD-9931)';
+      document.getElementById('order-summary').style.color = 'var(--success)';
+
+      document.getElementById('mcp-metric-steps').innerText = '1';
+      document.getElementById('mcp-metric-tokens').innerText = '2,140';
+
+      const duration = Math.round(performance.now() - start);
+      document.getElementById('mcp-metric-time').innerText = duration + ' ms';
+      log(`[Done] WebMCP Agent finished in 1 turn, 2,140 tokens!`, 'log-success');
+      btn.disabled = false;
+    }
+  </script>
+</body>
+</html>

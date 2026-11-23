@@ -1,0 +1,23 @@
+{
+  "name": "seminar-web-mcp",
+  "version": "1.0.0",
+  "description": "A measured look at WebMCP: exposing page functions to in-browser agents vs DOM actuation",
+  "main": "src/runner/benchmark.js",
+  "type": "module",
+  "scripts": {
+    "measure": "node src/runner/benchmark.js --mode=replay",
+    "measure:live": "node src/runner/benchmark.js --mode=live",
+    "measure:replay": "node src/runner/benchmark.js --mode=replay",
+    "test": "node src/runner/benchmark.js --mode=replay"
+  },
+  "keywords": [
+    "webmcp",
+    "model-context-protocol",
+    "w3c",
+    "browser-agents",
+    "llm-evaluation",
+    "chrome-origin-trial"
+  ],
+  "author": "AWAD Seminar Team 23KTPM1",
+  "license": "MIT"
+}

@@ -1,0 +1,669 @@
+{
+  "runIndex": 4,
+  "timestamp": "2026-11-23T08:27:47.339Z",
+  "environmentVariant": "obfuscated",
+  "baseline_dom": {
+    "totalSteps": 22,
+    "avgStepsPerTask": 4.4,
+    "totalPromptTokens": 59345,
+    "totalOutputTokens": 350,
+    "totalTokens": 59695,
+    "totalDurationMs": 3082,
+    "successCount": 5,
+    "successRate": 100,
+    "tasks": [
+      {
+        "taskName": "Product Search & Price Filter",
+        "agentType": "DOM-Actuation (Baseline)",
+        "success": true,
+        "steps": 3,
+        "promptTokens": 8001,
+        "outputTokens": 45,
+        "totalTokens": 8046,
+        "durationMs": 415,
+        "log": [
+          {
+            "step": 1,
+            "domSizeChars": 9988,
+            "promptTokens": 2666,
+            "outputTokens": 17,
+            "action": {
+              "action": "type",
+              "selector": "#search-input",
+              "value": "jacket"
+            },
+            "result": {
+              "success": true,
+              "updated": "#search-input",
+              "value": "jacket"
+            }
+          },
+          {
+            "step": 2,
+            "domSizeChars": 9994,
+            "promptTokens": 2667,
+            "outputTokens": 16,
+            "action": {
+              "action": "type",
+              "selector": "#max-price-input",
+              "value": "80"
+            },
+            "result": {
+              "success": true,
+              "updated": "#max-price-input",
+              "value": "80"
+            }
+          },
+          {
+            "step": 3,
+            "domSizeChars": 9996,
+            "promptTokens": 2668,
+            "outputTokens": 12,
+            "action": {
+              "action": "click",
+              "selector": "#btn-search"
+            },
+            "result": {
+              "success": true,
+              "status": "Searched \"jacket\", found 2 items"
+            }
+          }
+        ]
+      },
+      {
+        "taskName": "Faceted Filtering & Sorting",
+        "agentType": "DOM-Actuation (Baseline)",
+        "success": true,
+        "steps": 3,
+        "promptTokens": 8013,
+        "outputTokens": 51,
+        "totalTokens": 8064,
+        "durationMs": 447,
+        "log": [
+          {
+            "step": 1,
+            "domSizeChars": 9988,
+            "promptTokens": 2671,
+            "outputTokens": 19,
+            "action": {
+              "action": "select",
+              "selector": "#category-select",
+              "value": "electronics"
+            },
+            "result": {
+              "success": true,
+              "updated": "#category-select",
+              "value": "electronics"
+            }
+          },
+          {
+            "step": 2,
+            "domSizeChars": 9988,
+            "promptTokens": 2671,
+            "outputTokens": 18,
+            "action": {
+              "action": "select",
+              "selector": "#sort-select",
+              "value": "rating_desc"
+            },
+            "result": {
+              "success": true,
+              "updated": "#sort-select",
+              "value": "rating_desc"
+            }
+          },
+          {
+            "step": 3,
+            "domSizeChars": 9988,
+            "promptTokens": 2671,
+            "outputTokens": 14,
+            "action": {
+              "action": "click",
+              "selector": "#btn-apply-filters"
+            },
+            "result": {
+              "success": true,
+              "status": "Filtered category: electronics, sorted by rating_desc"
+            }
+          }
+        ]
+      },
+      {
+        "taskName": "Cart Mutation & Promo Code",
+        "agentType": "DOM-Actuation (Baseline)",
+        "success": true,
+        "steps": 4,
+        "promptTokens": 10869,
+        "outputTokens": 58,
+        "totalTokens": 10927,
+        "durationMs": 529,
+        "log": [
+          {
+            "step": 1,
+            "domSizeChars": 9988,
+            "promptTokens": 2680,
+            "outputTokens": 13,
+            "action": {
+              "action": "click",
+              "selector": "#btn-add-PROD-101"
+            },
+            "result": {
+              "success": true,
+              "status": "Added PROD-101 to cart"
+            }
+          },
+          {
+            "step": 2,
+            "domSizeChars": 10171,
+            "promptTokens": 2728,
+            "outputTokens": 13,
+            "action": {
+              "action": "click",
+              "selector": "#btn-add-PROD-101"
+            },
+            "result": {
+              "success": true,
+              "status": "Added PROD-101 to cart"
+            }
+          },
+          {
+            "step": 3,
+            "domSizeChars": 10175,
+            "promptTokens": 2729,
+            "outputTokens": 19,
+            "action": {
+              "action": "type",
+              "selector": "#coupon-code-input",
+              "value": "DISCOUNT20"
+            },
+            "result": {
+              "success": true,
+              "updated": "#coupon-code-input",
+              "value": "DISCOUNT20"
+            }
+          },
+          {
+            "step": 4,
+            "domSizeChars": 10185,
+            "promptTokens": 2732,
+            "outputTokens": 13,
+            "action": {
+              "action": "click",
+              "selector": "#btn-apply-coupon"
+            },
+            "result": {
+              "success": true,
+              "discountRate": 0.2,
+              "message": "Applied 20% discount"
+            }
+          }
+        ]
+      },
+      {
+        "taskName": "Customer Shipping Address Form",
+        "agentType": "DOM-Actuation (Baseline)",
+        "success": true,
+        "steps": 5,
+        "promptTokens": 13405,
+        "outputTokens": 85,
+        "totalTokens": 13490,
+        "durationMs": 717,
+        "log": [
+          {
+            "step": 1,
+            "domSizeChars": 9988,
+            "promptTokens": 2676,
+            "outputTokens": 18,
+            "action": {
+              "action": "type",
+              "selector": "#input-fullname",
+              "value": "John Doe"
+            },
+            "result": {
+              "success": true,
+              "updated": "#input-fullname",
+              "value": "John Doe"
+            }
+          },
+          {
+            "step": 2,
+            "domSizeChars": 9996,
+            "promptTokens": 2678,
+            "outputTokens": 19,
+            "action": {
+              "action": "type",
+              "selector": "#input-address",
+              "value": "123 Market St"
+            },
+            "result": {
+              "success": true,
+              "updated": "#input-address",
+              "value": "123 Market St"
+            }
+          },
+          {
+            "step": 3,
+            "domSizeChars": 10009,
+            "promptTokens": 2681,
+            "outputTokens": 16,
+            "action": {
+              "action": "type",
+              "selector": "#input-postal",
+              "value": "94105"
+            },
+            "result": {
+              "success": true,
+              "updated": "#input-postal",
+              "value": "94105"
+            }
+          },
+          {
+            "step": 4,
+            "domSizeChars": 10014,
+            "promptTokens": 2683,
+            "outputTokens": 19,
+            "action": {
+              "action": "type",
+              "selector": "#input-email",
+              "value": "john@example.com"
+            },
+            "result": {
+              "success": true,
+              "updated": "#input-email",
+              "value": "john@example.com"
+            }
+          },
+          {
+            "step": 5,
+            "domSizeChars": 10030,
+            "promptTokens": 2687,
+            "outputTokens": 13,
+            "action": {
+              "action": "click",
+              "selector": "#btn-save-address"
+            },
+            "result": {
+              "success": true,
+              "shippingAddress": {
+                "fullName": "John Doe",
+                "address": "123 Market St",
+                "postalCode": "94105",
+                "email": "john@example.com"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "taskName": "End-to-End Order Transaction",
+        "agentType": "DOM-Actuation (Baseline)",
+        "success": true,
+        "steps": 7,
+        "promptTokens": 19057,
+        "outputTokens": 111,
+        "totalTokens": 19168,
+        "durationMs": 974,
+        "log": [
+          {
+            "step": 1,
+            "domSizeChars": 9988,
+            "promptTokens": 2676,
+            "outputTokens": 13,
+            "action": {
+              "action": "click",
+              "selector": "#btn-add-PROD-101"
+            },
+            "result": {
+              "success": true,
+              "status": "Added PROD-101 to cart"
+            }
+          },
+          {
+            "step": 2,
+            "domSizeChars": 10171,
+            "promptTokens": 2724,
+            "outputTokens": 18,
+            "action": {
+              "action": "type",
+              "selector": "#input-fullname",
+              "value": "John Doe"
+            },
+            "result": {
+              "success": true,
+              "updated": "#input-fullname",
+              "value": "John Doe"
+            }
+          },
+          {
+            "step": 3,
+            "domSizeChars": 10179,
+            "promptTokens": 2726,
+            "outputTokens": 19,
+            "action": {
+              "action": "type",
+              "selector": "#input-address",
+              "value": "123 Market St"
+            },
+            "result": {
+              "success": true,
+              "updated": "#input-address",
+              "value": "123 Market St"
+            }
+          },
+          {
+            "step": 4,
+            "domSizeChars": 10192,
+            "promptTokens": 2730,
+            "outputTokens": 16,
+            "action": {
+              "action": "type",
+              "selector": "#input-postal",
+              "value": "94105"
+            },
+            "result": {
+              "success": true,
+              "updated": "#input-postal",
+              "value": "94105"
+            }
+          },
+          {
+            "step": 5,
+            "domSizeChars": 10197,
+            "promptTokens": 2731,
+            "outputTokens": 19,
+            "action": {
+              "action": "type",
+              "selector": "#input-email",
+              "value": "john@example.com"
+            },
+            "result": {
+              "success": true,
+              "updated": "#input-email",
+              "value": "john@example.com"
+            }
+          },
+          {
+            "step": 6,
+            "domSizeChars": 10213,
+            "promptTokens": 2735,
+            "outputTokens": 13,
+            "action": {
+              "action": "click",
+              "selector": "#btn-save-address"
+            },
+            "result": {
+              "success": true,
+              "shippingAddress": {
+                "fullName": "John Doe",
+                "address": "123 Market St",
+                "postalCode": "94105",
+                "email": "john@example.com"
+              }
+            }
+          },
+          {
+            "step": 7,
+            "domSizeChars": 10213,
+            "promptTokens": 2735,
+            "outputTokens": 13,
+            "action": {
+              "action": "click",
+              "selector": "#btn-submit-order"
+            },
+            "result": {
+              "success": true,
+              "orderId": "ORD-1795422467318",
+              "orderStatus": "completed",
+              "totals": {
+                "subtotal": 75,
+                "discount": 0,
+                "shipping": 9.99,
+                "tax": 6,
+                "finalTotal": 90.99
+              },
+              "shippingTo": "John Doe"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "change_webmcp": {
+    "totalSteps": 5,
+    "avgStepsPerTask": 1,
+    "totalPromptTokens": 3243,
+    "totalOutputTokens": 174,
+    "totalTokens": 3417,
+    "totalDurationMs": 133,
+    "successCount": 5,
+    "successRate": 100,
+    "tasks": [
+      {
+        "taskName": "Product Search & Price Filter",
+        "agentType": "WebMCP (Change)",
+        "success": true,
+        "steps": 1,
+        "promptTokens": 641,
+        "outputTokens": 18,
+        "totalTokens": 659,
+        "durationMs": 28,
+        "log": [
+          {
+            "tool": "searchProducts",
+            "args": {
+              "query": "jacket",
+              "maxPrice": 80
+            },
+            "result": {
+              "count": 2,
+              "items": [
+                {
+                  "id": "PROD-101",
+                  "name": "Waterproof Winter Jacket",
+                  "category": "apparel",
+                  "price": 75,
+                  "rating": 4.8,
+                  "inStock": true
+                },
+                {
+                  "id": "PROD-103",
+                  "name": "Lightweight Windbreaker Jacket",
+                  "category": "apparel",
+                  "price": 45,
+                  "rating": 4.3,
+                  "inStock": true
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "taskName": "Faceted Filtering & Sorting",
+        "agentType": "WebMCP (Change)",
+        "success": true,
+        "steps": 1,
+        "promptTokens": 646,
+        "outputTokens": 22,
+        "totalTokens": 668,
+        "durationMs": 22,
+        "log": [
+          {
+            "tool": "filterCatalog",
+            "args": {
+              "category": "electronics",
+              "sortBy": "rating_desc"
+            },
+            "result": {
+              "count": 3,
+              "items": [
+                {
+                  "id": "PROD-104",
+                  "name": "Noise Cancelling Wireless Headphones",
+                  "category": "electronics",
+                  "price": 199,
+                  "rating": 4.9,
+                  "inStock": true
+                },
+                {
+                  "id": "PROD-105",
+                  "name": "Ergonomic Mechanical Keyboard",
+                  "category": "electronics",
+                  "price": 89,
+                  "rating": 4.7,
+                  "inStock": true
+                },
+                {
+                  "id": "PROD-106",
+                  "name": "USB-C Fast Charging Hub",
+                  "category": "electronics",
+                  "price": 35,
+                  "rating": 4.4,
+                  "inStock": true
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "taskName": "Cart Mutation & Promo Code",
+        "agentType": "WebMCP (Change)",
+        "success": true,
+        "steps": 1,
+        "promptTokens": 655,
+        "outputTokens": 33,
+        "totalTokens": 688,
+        "durationMs": 31,
+        "log": [
+          {
+            "tool": "addToCart",
+            "args": {
+              "productId": "PROD-101",
+              "quantity": 2
+            },
+            "result": {
+              "success": true,
+              "cart": [
+                {
+                  "productId": "PROD-101",
+                  "name": "Waterproof Winter Jacket",
+                  "quantity": 2,
+                  "unitPrice": 75
+                }
+              ],
+              "totalItems": 2
+            }
+          },
+          {
+            "tool": "applyCoupon",
+            "args": {
+              "couponCode": "DISCOUNT20"
+            },
+            "result": {
+              "success": true,
+              "discountRate": 0.2,
+              "message": "Applied 20% discount"
+            }
+          }
+        ]
+      },
+      {
+        "taskName": "Customer Shipping Address Form",
+        "agentType": "WebMCP (Change)",
+        "success": true,
+        "steps": 1,
+        "promptTokens": 650,
+        "outputTokens": 36,
+        "totalTokens": 686,
+        "durationMs": 32,
+        "log": [
+          {
+            "tool": "setShippingAddress",
+            "args": {
+              "fullName": "John Doe",
+              "address": "123 Market St",
+              "postalCode": "94105",
+              "email": "john@example.com"
+            },
+            "result": {
+              "success": true,
+              "shippingAddress": {
+                "fullName": "John Doe",
+                "address": "123 Market St",
+                "postalCode": "94105",
+                "email": "john@example.com"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "taskName": "End-to-End Order Transaction",
+        "agentType": "WebMCP (Change)",
+        "success": true,
+        "steps": 1,
+        "promptTokens": 651,
+        "outputTokens": 65,
+        "totalTokens": 716,
+        "durationMs": 20,
+        "log": [
+          {
+            "tool": "addToCart",
+            "args": {
+              "productId": "PROD-101",
+              "quantity": 1
+            },
+            "result": {
+              "success": true,
+              "cart": [
+                {
+                  "productId": "PROD-101",
+                  "name": "Waterproof Winter Jacket",
+                  "quantity": 1,
+                  "unitPrice": 75
+                }
+              ],
+              "totalItems": 1
+            }
+          },
+          {
+            "tool": "setShippingAddress",
+            "args": {
+              "fullName": "John Doe",
+              "address": "123 Market St",
+              "postalCode": "94105",
+              "email": "john@example.com"
+            },
+            "result": {
+              "success": true,
+              "shippingAddress": {
+                "fullName": "John Doe",
+                "address": "123 Market St",
+                "postalCode": "94105",
+                "email": "john@example.com"
+              }
+            }
+          },
+          {
+            "tool": "submitCheckoutOrder",
+            "args": {},
+            "result": {
+              "success": true,
+              "orderId": "ORD-1795422467319",
+              "orderStatus": "completed",
+              "totals": {
+                "subtotal": 75,
+                "discount": 0,
+                "shipping": 9.99,
+                "tax": 6,
+                "finalTotal": 90.99
+              },
+              "shippingTo": "John Doe"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

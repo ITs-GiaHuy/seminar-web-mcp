@@ -1,0 +1,109 @@
+{
+  "metadata": {
+    "generatedAt": "2026-11-23T08:27:50.514Z",
+    "runsCount": 5,
+    "tasksCount": 5,
+    "platform": "linux",
+    "nodeVersion": "v24.16.0",
+    "chromeOriginTrial": "M149-M157",
+    "spec": "W3C Web Machine Learning CG Draft (WebMCP)"
+  },
+  "metrics": {
+    "steps": {
+      "baseline": {
+        "min": 4.4,
+        "max": 5.4,
+        "median": 4.4,
+        "iqr": 0.5,
+        "std": 0.4
+      },
+      "change": {
+        "min": 1,
+        "max": 1,
+        "median": 1,
+        "iqr": 0,
+        "std": 0
+      }
+    },
+    "promptTokens": {
+      "baseline": {
+        "min": 59345,
+        "max": 74172,
+        "median": 60271,
+        "iqr": 7615.5,
+        "std": 5629.55
+      },
+      "change": {
+        "min": 3243,
+        "max": 3243,
+        "median": 3243,
+        "iqr": 0,
+        "std": 0
+      }
+    },
+    "outputTokens": {
+      "baseline": {
+        "min": 350,
+        "max": 415,
+        "median": 350,
+        "iqr": 32.5,
+        "std": 26
+      },
+      "change": {
+        "min": 174,
+        "max": 174,
+        "median": 174,
+        "iqr": 0,
+        "std": 0
+      }
+    },
+    "totalTokens": {
+      "baseline": {
+        "min": 59695,
+        "max": 74587,
+        "median": 60621,
+        "iqr": 7648,
+        "std": 5655.47
+      },
+      "change": {
+        "min": 3417,
+        "max": 3417,
+        "median": 3417,
+        "iqr": 0,
+        "std": 0
+      }
+    },
+    "durationMs": {
+      "baseline": {
+        "min": 3047,
+        "max": 3261,
+        "median": 3071,
+        "iqr": 123.5,
+        "std": 80.59
+      },
+      "change": {
+        "min": 126,
+        "max": 152,
+        "median": 138,
+        "iqr": 21,
+        "std": 9.73
+      }
+    },
+    "successRate": {
+      "baseline": {
+        "min": 80,
+        "max": 100,
+        "median": 100,
+        "iqr": 10,
+        "std": 8
+      },
+      "change": {
+        "min": 100,
+        "max": 100,
+        "median": 100,
+        "iqr": 0,
+        "std": 0
+      }
+    }
+  }
+}
