@@ -1,19 +1,48 @@
 /**
  * Opencode Headless Runner
- * Spawns `/home/giahuy/.local/bin/opencode run [prompt] --format json --auto`
+ * Resolves opencode binary dynamically across user environments.
+ * Spawns `opencode run --pure --format json --auto [prompt]`
  * to execute agent tasks non-interactively and extract structured tokens/metrics.
  */
 
-import { spawn } from 'child_process';
+import { spawn, execSync } from 'child_process';
 import { existsSync } from 'fs';
-
-const OPENCODE_PATH = '/home/giahuy/.local/bin/opencode';
+import { homedir } from 'os';
+import { join } from 'path';
 
 /**
- * Checks if opencode is installed and executable.
+ * Dynamically discovers the opencode binary path across any environment/machine.
+ */
+export function getOpencodePath() {
+  // 1. Check if opencode is in system PATH
+  try {
+    const whichOut = execSync('which opencode 2>/dev/null', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
+    if (whichOut && existsSync(whichOut)) {
+      return whichOut;
+    }
+  } catch {
+    // not in system PATH
+  }
+
+  // 2. Check ~/.local/bin/opencode in the current user's home directory
+  const homeLocal = join(homedir(), '.local/bin/opencode');
+  if (existsSync(homeLocal)) {
+    return homeLocal;
+  }
+
+  // 3. Fallback hardcoded developer path
+  if (existsSync('/home/giahuy/.local/bin/opencode')) {
+    return '/home/giahuy/.local/bin/opencode';
+  }
+
+  return null;
+}
+
+/**
+ * Checks if opencode is installed and executable on the current system.
  */
 export function isOpencodeAvailable() {
-  return existsSync(OPENCODE_PATH);
+  return getOpencodePath() !== null;
 }
 
 /**
@@ -24,8 +53,9 @@ export function isOpencodeAvailable() {
  */
 export function runOpencodeHeadless(prompt, options = {}) {
   return new Promise((resolve, reject) => {
-    if (!isOpencodeAvailable()) {
-      return reject(new Error(`opencode binary not found at ${OPENCODE_PATH}`));
+    const opencodeBin = getOpencodePath();
+    if (!opencodeBin) {
+      return reject(new Error(`opencode CLI binary not detected on this machine. Please install opencode or use replay mode (npm run measure).`));
     }
 
     const startTime = performance.now();
@@ -35,7 +65,7 @@ export function runOpencodeHeadless(prompt, options = {}) {
     }
     args.push(prompt);
 
-    const proc = spawn(OPENCODE_PATH, args, {
+    const proc = spawn(opencodeBin, args, {
       cwd: options.cwd || process.cwd(),
       env: process.env,
       stdio: ['ignore', 'pipe', 'pipe']
