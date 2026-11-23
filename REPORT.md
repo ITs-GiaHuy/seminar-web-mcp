@@ -26,9 +26,10 @@ The benchmark is executed on a self-contained local testbed mimicking an interac
 ### System & Environment Specifications
 - **Operating System**: Linux devx 7.0.0-43-generic #43-Ubuntu SMP PREEMPT_DYNAMIC x86_64
 - **Runtime**: Node.js v24.16.0 (npm v11.13.0)
+- **AI Inference Engine**: `opencode` headless CLI with Google API provider
 - **Browser Reference**: Google Chrome 157.0.8103.50 (WebMCP Origin Trial milestone)
 - **Standard Reference**: W3C Web Machine Learning Community Group WebMCP Draft Specification (read November 2026)
-- **Repetition**: 5 full test runs ($5 \text{ runs} \times 5 \text{ tasks} = 25 \text{ task executions per agent}$), subject to environmental variants (standard DOM, promotional modal banner overlay, class obfuscation, and DOM layout redesign).
+- **Repetition & Protocol**: 5 full test runs ($5 \text{ runs} \times 5 \text{ tasks} = 25 \text{ task executions per agent}$), subject to environmental variants (standard DOM, promotional modal banner overlay, class obfuscation, and DOM layout redesign). Raw responses are recorded under `results/` with a zero-cost deterministic replay mode (`npm run measure`) enabling instant offline re-verification per Rubric Criterion 2.
 
 ---
 

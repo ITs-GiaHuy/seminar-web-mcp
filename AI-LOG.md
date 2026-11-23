@@ -46,3 +46,8 @@
 - **What the Assistant Got Wrong**: In the initial mock, both DOM and WebMCP agents achieved 100% success rate on static HTML, failing to measure the "success rate" metric specified in topic A1 of the rubric.
 - **How We Caught It**: Real-world websites dynamically alter their DOM (promotional modal banners, CSS class obfuscation, layout shifts), causing CSS selectors to fail.
 - **Action Taken**: We added layout variants in `src/app/dom-page.js` (banner overlay, obfuscated classes, redesigned layout), creating realistic spread ($80\% - 100\%$ success rate for DOM agent, while WebMCP retained 100% resilience due to semantic functional contracts).
+
+### Correction 4: Real LLM Execution vs Process Stdin Deadlock
+- **What the Assistant Got Wrong**: When spawning `opencode run` from inside Node.js child processes, the subprocess hung indefinitely because stdin was left open by default (`stdio: ['pipe', 'pipe', 'pipe']`) and plugins were being initialized in background mode.
+- **How We Caught It**: User prompted an explicit audit of the live inference pipeline (`KIỂM TRA LẠI THẬT KỸ CÓ DÙNG llm THẬT KO`). We inspected the process tree (`pstree`) and found `opencode` waiting for EOF on stdin while spawning `@delor` plugins.
+- **Action Taken**: Configured `stdio: ['ignore', 'pipe', 'pipe']` and passed `--pure` to `opencode`, reducing live inference time per turn from 50s down to ~6s. We then built `src/runner/live-single-task.js` (`npm run measure:task -- --task=1`) streaming yellow tokens in real time directly to the terminal, while ensuring dynamic path resolution and graceful fallback for systems without `opencode`.

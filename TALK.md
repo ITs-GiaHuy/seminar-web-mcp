@@ -26,12 +26,13 @@ Every team member presents an active part in the presentation:
 - **Live Demonstration**: Showing `demo/index.html` running side-by-side:
   - Demonstrating the Baseline DOM Agent struggling through multi-turn DOM scraping and banner interception.
   - Demonstrating the WebMCP Agent completing the task directly in 1 turn via `document.modelContext.executeTool()`.
+- **Live LLM Console Streaming**: Showing `npm run measure:task -- --task=1` in the terminal to observe real-time AI model reasoning text and single-turn tool dispatch.
 - **The Headline Numbers (Median & Spread over 5 Runs)**:
   - Steps: $4.4 \rightarrow 1.0$ steps per task (**−77.3%**)
   - Prompt Tokens: $60,271 \rightarrow 3,243$ tokens (**−94.6%**)
   - Execution Duration: $3,071 \rightarrow 138$ ms (**−95.5%**)
   - Success Rate: $100\%$ resilience vs DOM layout breaks.
-- **Replay Mode Verification**: Showing `npm run measure` running live in console and matching `results/summary.json`.
+- **Replay Mode Verification**: Showing `npm run measure` running in 1s and matching `results/summary.json`.
 
 ### Part 3: Findings, Trade-Offs, and Recommendations (05:20 – 07:35) · *Member 3*
 - **Cost Analysis**:
